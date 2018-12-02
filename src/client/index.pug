@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    title Socket Mazes
+    link(rel='icon' type='image/png',href='/favicon.png' sizes='64x64')
+    meta(property='og:title' content='Socket Mazes')
+    meta(name='twitter:title' content='Socket Mazes')
+
+    if mode === 'production'
+      script(async src='https://www.googletagmanager.com/gtag/js?id=UA-130203243-1')
+      script.
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-130203243-1');
+
+  body
+    h1 Socket Mazes
