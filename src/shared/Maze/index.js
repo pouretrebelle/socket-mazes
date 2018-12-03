@@ -1,5 +1,6 @@
 import MazeUnit from './MazeUnit';
 import MazeEdge from './MazeEdge';
+import MazePath from './MazePath';
 
 class Maze {
   constructor(c) {
@@ -7,14 +8,20 @@ class Maze {
 
     this.pixelRatio = (window && window.devicePixelRatio) || 1;
 
-    this.width = 1000;
-    this.height = 700;
+    // the parts we can't change
     this.unitsX = 30;
     this.unitsY = 20;
+
+    // positioning
+    this.width = 1000;
+    this.height = 700;
     this.marginLeft = 50;
     this.marginTop = 50;
-    this.wallWidth = 6 * this.pixelRatio;
-    this.wallBorderRadius = 14 * this.pixelRatio;
+
+    // pixel-ratio adjusted values
+    this.wallWidth = 4;
+    this.wallBorderRadius = 10;
+
     this.wallColor = '#000';
     this.backgroundColor = '#fff';
 
@@ -34,6 +41,9 @@ class Maze {
 
     // use algorithm to carve walls
     this.huntAndKill();
+
+    // setup maze path
+    this.path = new MazePath(this);
   }
 
   updateDimensions({ width, height, margin = 0 }) {
@@ -168,7 +178,12 @@ class Maze {
     const c = this.c;
 
     c.fillStyle = this.backgroundColor;
-    c.fillRect(0, 0, this.width, this.height);
+    c.fillRect(
+      0,
+      0,
+      this.width * this.pixelRatio,
+      this.height * this.pixelRatio
+    );
 
     c.save();
     c.translate(
@@ -181,6 +196,9 @@ class Maze {
         this.edges[x][y].draw(c);
       }
     }
+
+    // draw the path
+    this.path.draw(c);
 
     c.restore();
   }
