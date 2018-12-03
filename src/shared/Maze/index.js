@@ -2,29 +2,25 @@ import MazeUnit from './MazeUnit';
 import MazeEdge from './MazeEdge';
 
 class Maze {
-  constructor({
-    c,
-    w = 900,
-    unitsX = 30,
-    unitsY = 20,
-    wallWidth = 6,
-    wallBorderRadius = 14,
-    wallColor = '#000',
-    backgroundColor = '#fff',
-  }) {
-    // assign variables
+  constructor(c) {
     this.c = c;
-    this.w = w;
-    this.unitsX = unitsX;
-    this.unitsY = unitsY;
-    this.size = w / unitsX;
-    this.h = unitsY * this.size;
-    this.wallWidth = wallWidth;
-    this.wallBorderRadius = wallBorderRadius;
-    this.wallColor = wallColor;
-    this.backgroundColor = backgroundColor;
-    this.entranceY = Math.floor(Math.random() * unitsY);
-    this.exitY = Math.floor(Math.random() * unitsY);
+
+    this.pixelRatio = (window && window.devicePixelRatio) || 1;
+
+    this.width = 1000;
+    this.height = 700;
+    this.unitsX = 30;
+    this.unitsY = 20;
+    this.marginLeft = 50;
+    this.marginTop = 50;
+    this.wallWidth = 6 * this.pixelRatio;
+    this.wallBorderRadius = 14 * this.pixelRatio;
+    this.wallColor = '#000';
+    this.backgroundColor = '#fff';
+
+    this.size = this.width / this.unitsX;
+    this.entranceY = Math.floor(Math.random() * this.unitsY);
+    this.exitY = Math.floor(Math.random() * this.unitsY);
 
     // initialise units and edges as arrays of arrays
     this.units = Array.from({ length: this.unitsX + 1 }, () => []);
@@ -38,6 +34,33 @@ class Maze {
 
     // use algorithm to carve walls
     this.huntAndKill();
+  }
+
+  updateDimensions({ width, height, margin = 0 }) {
+    this.width = width;
+    this.height = height;
+
+    this.c.canvas.width = width * this.pixelRatio;
+    this.c.canvas.style.width = `${width}px`;
+    this.c.canvas.height = height * this.pixelRatio;
+    this.c.canvas.style.height = `${height}px`;
+
+    const unitsRatio = this.unitsX / this.unitsY;
+    const verticalGap =
+      (width - margin * 2) / (height - margin * 2) < unitsRatio;
+
+    if (verticalGap) {
+      this.marginLeft = margin;
+      this.marginTop = (height - (width - margin * 2) / unitsRatio) / 2;
+      this.size = ((width - margin * 2) / this.unitsX) * this.pixelRatio;
+    } else {
+      this.marginTop = margin;
+      this.marginLeft = (width - (height - margin * 2) * unitsRatio) / 2;
+      this.size = ((height - margin * 2) / this.unitsY) * this.pixelRatio;
+    }
+
+    this.wallWidth = this.size * 0.15;
+    this.wallBorderRadius = this.size * 0.35;
   }
 
   // Carving methods
@@ -144,15 +167,22 @@ class Maze {
   draw() {
     const c = this.c;
 
-    // destroy everything in a 100px radius
     c.fillStyle = this.backgroundColor;
-    c.fillRect(-100, -100, this.w + 200, this.h + 200);
+    c.fillRect(0, 0, this.width, this.height);
+
+    c.save();
+    c.translate(
+      this.marginLeft * this.pixelRatio,
+      this.marginTop * this.pixelRatio
+    );
 
     for (let x = 0; x <= this.unitsX * 2 + 1; x++) {
       for (let y = 0; y <= this.unitsY; y++) {
         this.edges[x][y].draw(c);
       }
     }
+
+    c.restore();
   }
 }
 
