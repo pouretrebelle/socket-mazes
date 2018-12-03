@@ -8,7 +8,7 @@ module.exports = (env, argv) => ({
   devtool: 'eval-source-map',
   entry: './src/client/main.js',
   output: {
-    path: path.join(__dirname, '../dist/'),
+    path: path.join(__dirname, '../docs/'),
     filename: '[name].js',
     publicPath: '/',
   },
