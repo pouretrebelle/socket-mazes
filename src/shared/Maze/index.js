@@ -115,6 +115,8 @@ class Maze {
     this.edges[this.unitsX * 2 + 1][this.exitY].active = false;
 
     this.huntAndKill();
+    this.path.reset();
+    this.draw();
   }
 
   // Carving algorithms

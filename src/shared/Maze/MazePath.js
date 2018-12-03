@@ -4,7 +4,7 @@ class MazePath {
   constructor(maze) {
     this.maze = maze;
     this.complete = false;
-    this.pathColor = '#6f767b';
+    this.pathColor = '#df7f26';
     this.originalPathColor = this.pathColor;
     this.segments = [];
 

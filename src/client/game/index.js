@@ -4,6 +4,7 @@ const KEY_CODES = {
   ARROW_RIGHT: 39,
   ARROW_DOWN: 40,
   ARROW_LEFT: 37,
+  SPACE: 32,
 };
 
 const canvas = document.createElement('canvas');
@@ -39,6 +40,10 @@ window.addEventListener('keydown', (e) => {
 
     case KEY_CODES.ARROW_LEFT:
       maze.path.travel(3);
+      break;
+
+    case KEY_CODES.SPACE:
+      maze.regenerate();
       break;
   }
 });
