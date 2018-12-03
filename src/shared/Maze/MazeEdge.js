@@ -11,6 +11,12 @@ class MazeEdge {
     this.active = true;
     this.disabled = false;
 
+    // for path drawing
+    this.middle = {
+      x: this.vert ? this.x : this.x + 0.5,
+      y: this.vert ? this.y + 0.5 : this.y,
+    };
+
     // bottom
     if (this.vert && this.y == this.maze.unitsY) this.disabled = true;
     // right

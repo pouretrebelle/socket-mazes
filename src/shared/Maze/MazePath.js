@@ -8,14 +8,21 @@ class MazePath {
     this.originalPathColor = this.pathColor;
     this.segments = [];
 
-    this.addToPath(0, this.maze.entranceY);
+    console.log(this.maze.units[0][0]);
   }
 
-  addToPath(x, y, color = this.pathColor) {
+  addToPath({ unit, edge, color = this.pathColor }) {
     this.active = false;
 
-    let next = this.maze.units[x][y];
-    let segment = new MazePathSegment(this.last(), next, color, this.maze);
+    let last = this.last();
+    let segment = new MazePathSegment({
+      startUnit: last.endUnit,
+      startEdge: last.endEdge,
+      endUnit: unit,
+      endEdge: edge,
+      color: color,
+      maze: this.maze,
+    });
     this.segments.push(segment);
 
     // if it's the first addition, change the path color
@@ -28,10 +35,19 @@ class MazePath {
     // if there are segments
     if (this.segments.length > 0) {
       // return the 'end' of the last one
-      return this.segments[this.segments.length - 1].end;
+      return this.segments[this.segments.length - 1];
     }
-    // otherwise return the origin
-    return this.maze.units[0][this.maze.entranceY];
+
+    // otherwise return the entrance and fake start edge
+    return {
+      endUnit: this.maze.units[0][this.maze.entranceY],
+      endEdge: {
+        middle: {
+          x: 0,
+          y: this.maze.entranceY + 0.5,
+        },
+      },
+    };
   }
 
   travel(direction, color) {
@@ -39,7 +55,7 @@ class MazePath {
     if (this.complete) return;
 
     // get the end of the line
-    let current = this.last();
+    let current = this.last().endUnit;
     let hitJunction = false;
 
     // move until you hit a wall
@@ -62,8 +78,12 @@ class MazePath {
     }
 
     // if it has moved, add it to the path
-    if (current != this.last()) {
-      this.addToPath(current.x, current.y, color);
+    if (current != this.last().endUnit) {
+      this.addToPath({
+        unit: current,
+        edge: current.edges[(direction + 2) % 4], // where we came from
+        color: color,
+      });
     }
 
     // if the current unit is the last one on the grid the maze is complete!
@@ -73,6 +93,18 @@ class MazePath {
       direction == 1
     ) {
       this.complete = true;
+
+      // add final path
+      this.addToPath({
+        unit: current,
+        edge: {
+          middle: {
+            x: current.x + 1,
+            y: current.y + 0.5,
+          },
+        },
+        color: color,
+      });
     }
 
     this.maze.draw();
@@ -82,7 +114,6 @@ class MazePath {
     this.complete = false;
     this.pathColor = this.originalPathColor;
     this.segments = [];
-    this.addToPath(0, this.maze.entranceY);
   }
 
   draw(c) {
@@ -91,13 +122,14 @@ class MazePath {
     const pathHeadSize = m.size * 0.4;
 
     c.fillStyle = this.pathColor;
+    c.strokeStyle = this.pathColor;
     c.lineWidth = pathWidth;
 
     // draw start of path
     c.fillRect(
       -m.marginLeft * m.pixelRatio,
       (0.5 + m.entranceY) * m.size - pathWidth * 0.5,
-      0.5 * m.size + m.marginLeft * m.pixelRatio,
+      m.marginLeft * m.pixelRatio,
       pathWidth
     );
 
@@ -106,9 +138,9 @@ class MazePath {
       // set the colour to the last segment
       c.fillStyle = this.segments[this.segments.length - 1].color;
       c.fillRect(
-        (m.unitsX - 0.5) * m.size,
+        m.unitsX * m.size,
         (0.5 + m.exitY) * m.size - pathWidth * 0.5,
-        0.5 * m.size + m.marginLeft * m.pixelRatio,
+        m.marginLeft * m.pixelRatio,
         pathWidth
       );
     }
@@ -120,11 +152,20 @@ class MazePath {
 
     // draw ball at the end of path
     if (!this.complete) {
-      let end = this.last();
+      let last = this.last();
+
+      c.beginPath();
+      c.moveTo(last.endEdge.middle.x * m.size, last.endEdge.middle.y * m.size);
+      c.lineTo(
+        (last.endUnit.x + 0.5) * m.size,
+        (last.endUnit.y + 0.5) * m.size
+      );
+      c.stroke();
+
       c.beginPath();
       c.arc(
-        (end.x + 0.5) * m.size,
-        (end.y + 0.5) * m.size,
+        (last.endUnit.x + 0.5) * m.size,
+        (last.endUnit.y + 0.5) * m.size,
         pathHeadSize * 0.5,
         0,
         2 * Math.PI
