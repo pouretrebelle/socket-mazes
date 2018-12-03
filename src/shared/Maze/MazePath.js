@@ -125,14 +125,6 @@ class MazePath {
     c.strokeStyle = this.pathColor;
     c.lineWidth = pathWidth;
 
-    // draw start of path
-    c.fillRect(
-      -m.marginLeft * m.pixelRatio,
-      (0.5 + m.entranceY) * m.size - pathWidth * 0.5,
-      m.marginLeft * m.pixelRatio,
-      pathWidth
-    );
-
     // draw end of path if it's finished
     if (this.complete) {
       // set the colour to the last segment
@@ -146,9 +138,24 @@ class MazePath {
     }
 
     // draw each segment of path
+    const segmentCount = this.segments.length;
     for (let i = 0; i < this.segments.length; i++) {
-      this.segments[i].draw(c, pathWidth);
+      const opacity = Math.max(0.2, 1 - i * 0.005); // fade out as you go
+      c.globalAlpha = opacity;
+      this.segments[segmentCount - 1 - i].draw(c, pathWidth);
     }
+
+    // draw start of path
+    // at same alpha as last drawn segment
+    c.fillRect(
+      -m.marginLeft * m.pixelRatio,
+      (0.5 + m.entranceY) * m.size - pathWidth * 0.5,
+      m.marginLeft * m.pixelRatio,
+      pathWidth
+    );
+
+    // reset alpha
+    c.globalAlpha = 1;
 
     // draw ball at the end of path
     if (!this.complete) {
