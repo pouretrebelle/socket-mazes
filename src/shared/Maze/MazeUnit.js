@@ -49,18 +49,15 @@ class MazeUnit {
     this.edges = e;
   }
 
-  update() {
-  }
+  update() {}
 
-  draw(c) {
-  }
+  draw(c) {}
 
   checkCorner(c, one, two, corner) {
     if (
-      (this.edges[one] === false ||
-      this.edges[one].canDraw()) &&
-      (this.edges[two] === false ||
-      this.edges[two].canDraw())) {
+      (this.edges[one] === false || this.edges[one].canDraw()) &&
+      (this.edges[two] === false || this.edges[two].canDraw())
+    ) {
       this.drawCorner(c, corner);
     }
   }
@@ -69,14 +66,18 @@ class MazeUnit {
     let x = this.x * this.maze.size;
     let y = this.y * this.maze.size;
     if (corner == 0 || corner == 3) {
-      x += this.maze.size - (this.maze.wallBorderRadius - this.maze.wallWidth * 0.5);
+      x +=
+        this.maze.size -
+        (this.maze.wallBorderRadius - this.maze.wallWidth * 0.5);
     } else {
-      x += (this.maze.wallBorderRadius - this.maze.wallWidth * 0.5);
+      x += this.maze.wallBorderRadius - this.maze.wallWidth * 0.5;
     }
     if (corner == 1 || corner == 0) {
-      y += this.maze.size - (this.maze.wallBorderRadius - this.maze.wallWidth*0.5);
+      y +=
+        this.maze.size -
+        (this.maze.wallBorderRadius - this.maze.wallWidth * 0.5);
     } else {
-      y += (this.maze.wallBorderRadius - this.maze.wallWidth * 0.5);
+      y += this.maze.wallBorderRadius - this.maze.wallWidth * 0.5;
     }
     outlineArc(
       c,
@@ -84,7 +85,7 @@ class MazeUnit {
       y,
       corner,
       this.maze.wallBorderRadius,
-      this.maze.wallBorderRadius-this.maze.wallWidth,
+      this.maze.wallBorderRadius - this.maze.wallWidth
     );
   }
 
@@ -155,14 +156,11 @@ class MazeUnit {
     let diffY = this.y - neighbour.y;
     if (diffX == 1) {
       return this.edges[3];
-    }
-    else if (diffX == -1) {
+    } else if (diffX == -1) {
       return this.edges[1];
-    }
-    else if (diffY == 1) {
+    } else if (diffY == 1) {
       return this.edges[2];
-    }
-    else if (diffY == -1) {
+    } else if (diffY == -1) {
       return this.edges[0];
     }
     return false;

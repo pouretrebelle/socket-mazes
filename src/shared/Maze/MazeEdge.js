@@ -16,9 +16,11 @@ class MazeEdge {
     // right
     if (!this.vert && this.x == this.maze.unitsX) this.disabled = true;
     // entrance
-    if (this.vert && this.x == 0 && this.y == this.maze.entranceY) this.active = false;
+    if (this.vert && this.x == 0 && this.y == this.maze.entranceY)
+      this.active = false;
     // exit
-    if (this.vert && this.x == this.maze.unitsX && this.y == this.maze.exitY) this.active = false;
+    if (this.vert && this.x == this.maze.unitsX && this.y == this.maze.exitY)
+      this.active = false;
   }
 
   deactivate() {
@@ -26,20 +28,22 @@ class MazeEdge {
   }
 
   cantDraw() {
-    return (!this.active || this.disabled);
+    return !this.active || this.disabled;
   }
 
   canDraw() {
-    return (this.active && !this.disabled);
+    return this.active && !this.disabled;
   }
 
   checkRelativeEdge(x, y) {
-    const targetX = this.vert ? this.x*2+1+x : this.x*2+x;
+    const targetX = this.vert ? this.x * 2 + 1 + x : this.x * 2 + x;
     const targetY = this.y + y;
     let curve = false;
-    if (this.maze.edges[targetX] &&
-        this.maze.edges[targetX][targetY] &&
-        this.maze.edges[targetX][targetY].canDraw()) {
+    if (
+      this.maze.edges[targetX] &&
+      this.maze.edges[targetX][targetY] &&
+      this.maze.edges[targetX][targetY].canDraw()
+    ) {
       curve = true;
     }
     return curve;
@@ -65,11 +69,19 @@ class MazeEdge {
       m.wallWidth
     );
 
-    let curveStartLeft = this.vert ? this.checkRelativeEdge(-3, 0) : this.checkRelativeEdge(1, 0);
-    let curveEndLeft = this.vert ? this.checkRelativeEdge(-1, 1) : this.checkRelativeEdge(3, -1);
+    let curveStartLeft = this.vert
+      ? this.checkRelativeEdge(-3, 0)
+      : this.checkRelativeEdge(1, 0);
+    let curveEndLeft = this.vert
+      ? this.checkRelativeEdge(-1, 1)
+      : this.checkRelativeEdge(3, -1);
 
-    let curveStartRight = this.vert ? this.checkRelativeEdge(-1, 0) : this.checkRelativeEdge(1, -1);
-    let curveEndRight = this.vert ? this.checkRelativeEdge(-3, 1) : this.checkRelativeEdge(3, 0);
+    let curveStartRight = this.vert
+      ? this.checkRelativeEdge(-1, 0)
+      : this.checkRelativeEdge(1, -1);
+    let curveEndRight = this.vert
+      ? this.checkRelativeEdge(-3, 1)
+      : this.checkRelativeEdge(3, 0);
 
     if (curveStartLeft && curveStartRight) this.drawCurveWithT(c);
     else if (curveStartLeft) this.drawCurve(c);
@@ -100,8 +112,20 @@ class MazeEdge {
     this.drawCurve(c);
     c.beginPath();
     c.moveTo(-this.maze.wallWidth * 0.5, this.maze.wallBorderRadius);
-    c.arcTo(-this.maze.wallWidth * 0.5, 0, this.maze.wallBorderRadius - this.maze.wallWidth * 0.5, 0, this.maze.wallBorderRadius);
-    c.arcTo(-this.maze.wallWidth * 0.5, 0, -this.maze.wallWidth * 0.5, -this.maze.wallBorderRadius, this.maze.wallBorderRadius);
+    c.arcTo(
+      -this.maze.wallWidth * 0.5,
+      0,
+      this.maze.wallBorderRadius - this.maze.wallWidth * 0.5,
+      0,
+      this.maze.wallBorderRadius
+    );
+    c.arcTo(
+      -this.maze.wallWidth * 0.5,
+      0,
+      -this.maze.wallWidth * 0.5,
+      -this.maze.wallBorderRadius,
+      this.maze.wallBorderRadius
+    );
     c.lineTo(-this.maze.wallWidth * 0.5, -this.maze.wallBorderRadius);
     c.fill();
   }
@@ -110,18 +134,9 @@ class MazeEdge {
     const m = this.maze;
 
     c.beginPath();
-    c.moveTo(
-      m.wallBorderRadius - m.wallWidth * 0.5,
-      -m.wallWidth * 0.5,
-    );
-    c.lineTo(
-      m.wallBorderRadius - m.wallWidth * 0.5,
-      m.wallWidth * 0.5,
-    );
-    c.lineTo(
-      0,
-      m.wallWidth * 0.5,
-    );
+    c.moveTo(m.wallBorderRadius - m.wallWidth * 0.5, -m.wallWidth * 0.5);
+    c.lineTo(m.wallBorderRadius - m.wallWidth * 0.5, m.wallWidth * 0.5);
+    c.lineTo(0, m.wallWidth * 0.5);
     c.arcTo(
       -m.wallWidth * 0.5,
       m.wallWidth * 0.5,

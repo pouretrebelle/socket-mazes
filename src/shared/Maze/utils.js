@@ -1,4 +1,4 @@
-const roundedRect = function(c, x, y, width, height, radius) {
+export const roundedRect = (c, x, y, width, height, radius) => {
   c.beginPath();
   c.moveTo(x, y + radius);
   c.lineTo(x, y + height - radius);
@@ -12,7 +12,7 @@ const roundedRect = function(c, x, y, width, height, radius) {
   c.fill();
 };
 
-const outlineArc = function(c, x, y, outerRadius, innerRadius, angle) {
+export const outlineArc = (c, x, y, outerRadius, innerRadius, angle) => {
   c.save();
   c.translate(x, y);
   c.rotate(angle);
@@ -24,5 +24,3 @@ const outlineArc = function(c, x, y, outerRadius, innerRadius, angle) {
   c.fill();
   c.restore();
 };
-
-export { roundedRect, outlineArc };

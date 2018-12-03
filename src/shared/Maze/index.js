@@ -2,8 +2,16 @@ import MazeUnit from './MazeUnit';
 import MazeEdge from './MazeEdge';
 
 class Maze {
-  constructor(c, w, unitsX, unitsY, wallWidth, wallBorderRadius, wallColor, backgroundColor) {
-
+  constructor({
+    c,
+    w = 900,
+    unitsX = 30,
+    unitsY = 20,
+    wallWidth = 6,
+    wallBorderRadius = 14,
+    wallColor = '#000',
+    backgroundColor = '#fff',
+  }) {
     // assign variables
     this.c = c;
     this.w = w;
@@ -31,7 +39,6 @@ class Maze {
     // use algorithm to carve walls
     this.huntAndKill();
   }
-
 
   // Carving methods
   //===================================
@@ -72,17 +79,18 @@ class Maze {
 
     // reset the exit and entrances
     this.edges[1][this.entranceY].active = false;
-    this.edges[this.unitsX*2 + 1][this.exitY].active = false;
+    this.edges[this.unitsX * 2 + 1][this.exitY].active = false;
 
     this.huntAndKill();
   }
-
 
   // Carving algorithms
   //===================================
 
   huntAndKill() {
-    let startUnit = this.units[Math.round(this.unitsX/2)][Math.round(this.unitsY/2)];
+    let startUnit = this.units[Math.round(this.unitsX / 2)][
+      Math.round(this.unitsY / 2)
+    ];
     while (startUnit != false) {
       this.kill(startUnit);
       startUnit = this.hunt();
@@ -130,7 +138,6 @@ class Maze {
     return false;
   }
 
-
   // Drawing methods
   //===================================
 
@@ -147,7 +154,6 @@ class Maze {
       }
     }
   }
-
 }
 
 export default Maze;
