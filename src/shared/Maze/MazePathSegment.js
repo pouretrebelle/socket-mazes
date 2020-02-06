@@ -25,6 +25,16 @@ class MazePathSegment {
     );
     c.stroke();
   }
+
+  getBackwardsDirection() {
+    const xDiff = this.endUnit.x - this.startUnit.x;
+    const yDiff = this.endUnit.y - this.startUnit.y;
+
+    if (xDiff > 0) return 3;
+    if (xDiff < 0) return 1;
+    if (yDiff > 0) return 0;
+    if (yDiff < 0) return 2;
+  }
 }
 
 export default MazePathSegment;

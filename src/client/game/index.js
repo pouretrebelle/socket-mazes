@@ -48,4 +48,51 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
+setInterval(() => {
+  followPath();
+}, 20);
+
+let movesSinceChoice = 0;
+
+const getRandomNextNeighbour = (pathSegment) => {
+  const directions = [0, 1, 2, 3].filter(
+    (i) =>
+      !pathSegment.endUnit.edges[i].active &&
+      pathSegment.endUnit.edges[i] !== false
+  );
+  const backwardsDirection =
+    pathSegment.getBackwardsDirection && pathSegment.getBackwardsDirection();
+
+  const availibleDirections = directions.filter(
+    (d) => d !== backwardsDirection
+  );
+
+  // dead end?
+  if (availibleDirections.length === 0) {
+    return backwardsDirection;
+  }
+
+  return availibleDirections[
+    Math.floor(Math.random() * availibleDirections.length)
+  ];
+};
+
+const followPath = () => {
+  // console.log(movesSinceChoice)
+  const lastSegment = maze.path.last();
+
+  const walls = lastSegment.endUnit.countWalls();
+  const hasChoice = walls === 1;
+  const deadEnd = walls === 3;
+
+  if (hasChoice) movesSinceChoice = 0;
+
+  // if (deadEnd) console.log('dead end')
+
+  const next = getRandomNextNeighbour(lastSegment);
+  maze.path.travel(next);
+
+  movesSinceChoice++;
+};
+
 document.body.append(canvas);
