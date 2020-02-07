@@ -8,6 +8,8 @@ class MazeUnit {
     this.neighbours = [];
     this.edges = [];
 
+    this.usedDirections = [];
+
     this.active = false;
   }
 

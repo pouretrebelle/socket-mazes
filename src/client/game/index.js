@@ -48,37 +48,46 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-setInterval(() => {
+const findPath = setInterval(() => {
   followPath();
-}, 20);
+}, 100);
 
 let movesSinceChoice = 0;
 
 const getRandomNextNeighbour = (pathSegment) => {
-  const directions = [0, 1, 2, 3].filter(
-    (i) =>
-      !pathSegment.endUnit.edges[i].active &&
-      pathSegment.endUnit.edges[i] !== false
+  const nonWallDirections = [0, 1, 2, 3].filter(
+    (d) =>
+      !pathSegment.endUnit.edges[d].active &&
+      pathSegment.endUnit.edges[d] !== false
   );
   const backwardsDirection =
     pathSegment.getBackwardsDirection && pathSegment.getBackwardsDirection();
 
-  const availibleDirections = directions.filter(
+  const forwardDirections = nonWallDirections.filter(
     (d) => d !== backwardsDirection
   );
+  const unusedDirections = forwardDirections.filter(
+    (d) => d !== !pathSegment.endUnit.usedDirections.includes(d)
+  );
 
-  // dead end?
-  if (availibleDirections.length === 0) {
-    return backwardsDirection;
+  let result =
+    unusedDirections[Math.floor(Math.random() * unusedDirections.length)];
+
+  if (unusedDirections.length === 0) {
+    result = forwardDirections[0];
+  }
+  if (forwardDirections.length === 0) {
+    result = backwardsDirection;
   }
 
-  return availibleDirections[
-    Math.floor(Math.random() * availibleDirections.length)
-  ];
+  pathSegment.endUnit.usedDirections.push(result);
+
+  return result;
 };
 
 const followPath = () => {
-  // console.log(movesSinceChoice)
+  if (maze.path.complete) return clearInterval(findPath);
+
   const lastSegment = maze.path.last();
 
   const walls = lastSegment.endUnit.countWalls();
@@ -87,7 +96,7 @@ const followPath = () => {
 
   if (hasChoice) movesSinceChoice = 0;
 
-  // if (deadEnd) console.log('dead end')
+  // if (deadEnd) console.log('dead end');
 
   const next = getRandomNextNeighbour(lastSegment);
   maze.path.travel(next);

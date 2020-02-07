@@ -104,6 +104,8 @@ class Maze {
     this.entranceY = Math.floor(Math.random() * this.unitsY);
     this.exitY = Math.floor(Math.random() * this.unitsY);
 
+    this.units.forEach((unit) => (unit.usedDirections = []));
+
     for (let x = 0; x <= this.unitsX * 2 + 1; x++) {
       for (let y = 0; y <= this.unitsY; y++) {
         this.edges[x][y].active = true;
