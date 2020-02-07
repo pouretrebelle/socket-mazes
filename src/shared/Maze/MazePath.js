@@ -1,3 +1,6 @@
+import saveAs from 'file-saver';
+import C2S from 'canvas2svg';
+
 import MazePathSegment from './MazePathSegment';
 
 class MazePath {
@@ -179,6 +182,41 @@ class MazePath {
       );
       c.fill();
     }
+  }
+
+  saveSvg() {
+    const m = this.maze;
+    const c = new C2S(m.c.canvas.width, m.c.canvas.height);
+
+    c.translate(m.marginLeft * m.pixelRatio, m.marginTop * m.pixelRatio);
+
+    // draw start of path
+    c.beginPath();
+    c.moveTo(-m.marginLeft * m.pixelRatio, (0.5 + m.entranceY) * m.size);
+    c.lineTo(0, (0.5 + m.entranceY) * m.size);
+    c.stroke();
+
+    // draw end of path if it's finished
+    if (this.complete) {
+      c.beginPath();
+      c.moveTo(m.unitsX * m.size, (0.5 + m.exitY) * m.size);
+      c.lineTo(
+        m.unitsX * m.size + m.marginLeft * m.pixelRatio,
+        (0.5 + m.exitY) * m.size
+      );
+      c.stroke();
+    }
+
+    // draw each segment of path
+    const segmentCount = this.segments.length;
+    for (let i = 0; i < this.segments.length; i++) {
+      this.segments[segmentCount - 1 - i].draw(c);
+    }
+
+    const blob = new Blob([c.getSerializedSvg()], {
+      type: 'text/plain',
+    });
+    saveAs(blob, 'maze.svg');
   }
 }
 

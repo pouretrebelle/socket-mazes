@@ -8,7 +8,7 @@ class MazePathSegment {
     this.color = color;
   }
 
-  draw(c, pathWidth) {
+  draw(c) {
     const m = this.maze;
 
     c.strokeStyle = this.color;
