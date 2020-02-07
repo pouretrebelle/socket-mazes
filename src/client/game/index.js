@@ -5,6 +5,7 @@ const KEY_CODES = {
   ARROW_DOWN: 40,
   ARROW_LEFT: 37,
   SPACE: 32,
+  S: 83,
 };
 
 const canvas = document.createElement('canvas');
@@ -44,6 +45,10 @@ window.addEventListener('keydown', (e) => {
 
     case KEY_CODES.SPACE:
       maze.regenerate();
+      break;
+
+    case KEY_CODES.S:
+      maze.path.saveSvg();
       break;
   }
 });
