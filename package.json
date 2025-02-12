@@ -45,7 +45,7 @@
     "pug-html-loader": "^1.1.5",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
-    "webpack": "^4.26.1",
+    "webpack": "^5.97.1",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
   }
